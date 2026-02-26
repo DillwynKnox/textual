@@ -251,6 +251,21 @@ class Tabs(Widget, can_focus=True):
                 background: transparent;
             }
         }
+
+        .tabs-indicator {
+            width: 2;
+            content-align: center middle;
+            display: none;
+        }
+
+        &.-overflow-left #left-indicator {
+            display: block;
+        }
+
+        &.-overflow-right #right-indicator {
+            display: block;
+        }
+        
     }
     """
 
@@ -611,14 +626,15 @@ class Tabs(Widget, can_focus=True):
             self.active = tab.id or ""
 
     def compose(self) -> ComposeResult:
-        yield Static("‹", id="tabs-left-indicator", classes="tabs-indicator")
-        with Container(id="tabs-scroll"):
-            with Vertical(id="tabs-list-bar"):
-                with Horizontal(id="tabs-list"):
-                    yield from self._tabs
-                yield Underline()
-        yield Static("›", id="tabs-right-indicator", classes="tabs-indicator")
-        
+        with Horizontal(id="tabs-wrapper"):
+            yield Static("◀", id="left-indicator", classes="tabs-indicator")
+            with Container(id="tabs-scroll"):
+                with Vertical(id="tabs-list-bar"):
+                    with Horizontal(id="tabs-list"):
+                        yield from self._tabs
+                    yield Underline()
+            yield Static("▶", id="right-indicator", classes="tabs-indicator")
+
     def watch_active(self, previously_active: str, active: str) -> None:
         """Handle a change to the active tab."""
         self.query("#tabs-list > Tab.-active").remove_class("-active")
