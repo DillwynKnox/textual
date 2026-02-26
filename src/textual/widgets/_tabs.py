@@ -611,12 +611,14 @@ class Tabs(Widget, can_focus=True):
             self.active = tab.id or ""
 
     def compose(self) -> ComposeResult:
+        yield Static("‹", id="tabs-left-indicator", classes="tabs-indicator")
         with Container(id="tabs-scroll"):
             with Vertical(id="tabs-list-bar"):
                 with Horizontal(id="tabs-list"):
                     yield from self._tabs
                 yield Underline()
-
+        yield Static("›", id="tabs-right-indicator", classes="tabs-indicator")
+        
     def watch_active(self, previously_active: str, active: str) -> None:
         """Handle a change to the active tab."""
         self.query("#tabs-list > Tab.-active").remove_class("-active")
