@@ -78,9 +78,13 @@ class ContentTabs(Tabs):
 
     DEFAULT_CSS = """
     ContentTabs {
-        &.-overflow-left 
+        &.-overflow-left > #tabs-left-indicator { 
+        display:block;
+        }
         
-        &.-overflow-right
+        &.-overflow-right > #tabs-right-indicator {
+            display:block;
+        }
     }
     """
 
