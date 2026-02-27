@@ -803,6 +803,29 @@ class Tabs(Widget, can_focus=True):
         event.stop()
         self._highlight_active()
 
+    def _update_ovqerflow_classes(self) -> None:
+        """Add/remove overflow classes based on scroll position."""
+        try:
+            scroll = self.query_one("#tabs-scroll")
+        except NoMatches:
+            return
+
+        # Is there content scrolled off to the left?
+        can_scroll_left = scroll.scroll_x > 0
+        # Is there content scrolled off to the right?
+        can_scroll_right = scroll.scroll_x < scroll.max_scroll_x
+
+        self.set_class(can_scroll_left, "-overflow-left")
+        self.set_class(can_scroll_right, "-overflow-right")
+
+    def _watch_scroll(self) -> None:
+        """Set up a watcher on the scroll container's scroll_x."""
+        try:
+            scroll = self.query_one("#tabs-scroll")
+            self.watch(scroll, "scroll_x", self._update_overflow_classes)
+        except NoMatches:
+            pass
+
     def disable(self, tab_id: str) -> Tab:
         """Disable the indicated tab.
 
