@@ -8,7 +8,7 @@ repos:
       - id: check-builtin-literals  # requires literal syntax when initializing empty or zero python builtin types
       - id: check-case-conflict  # checks for files that would conflict in case-insensitive filesystems
       - id: check-merge-conflict  # checks for files that contain merge conflict strings
-      - id: check-json  #W checks json files for parseable syntax
+      - id: check-json  # checks json files for parseable syntax
       - id: check-toml  # checks toml files for parseable syntax
       - id: check-yaml  # checks yaml files for parseable syntax
         args: [ '--unsafe' ]  # Instead of loading the files, simply parse them for syntax.
