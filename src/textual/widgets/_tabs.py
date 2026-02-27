@@ -821,7 +821,7 @@ class Tabs(Widget, can_focus=True):
         self._highlight_active()
         self.call_after_refresh(self._update_overflow_classes)
 
-    def _update_ovqerflow_classes(self) -> None:
+    def _update_overflow_classes(self) -> None:
         """Add/remove overflow classes based on scroll position."""
         try:
             scroll = self.query_one("#tabs-scroll")
