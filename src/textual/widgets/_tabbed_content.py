@@ -76,18 +76,6 @@ class ContentTab(Tab):
 class ContentTabs(Tabs):
     """A Tabs which is associated with a TabbedContent."""
 
-    DEFAULT_CSS = """
-    ContentTabs {
-        &.-overflow-left > #tabs-left-indicator { 
-        display:block;
-        }
-        
-        &.-overflow-right > #tabs-right-indicator {
-            display:block;
-        }
-    }
-    """
-
     def __init__(
         self,
         *tabs: Tab | ContentText,

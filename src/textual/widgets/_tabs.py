@@ -216,6 +216,14 @@ class Tabs(Widget, can_focus=True):
                 background: $block-cursor-background;
             }
         }
+        
+        &.-overflow-left > #tabs-left-indicator { 
+        display:block;
+        }
+        
+        &.-overflow-right > #tabs-right-indicator {
+            display:block;
+        }
 
         & > #tabs-scroll {
             overflow: hidden;
@@ -532,6 +540,7 @@ class Tabs(Widget, can_focus=True):
                 self.call_after_refresh(self._update_overflow_classes)
 
             return AwaitComplete(refresh_active())
+
         async def append_and_check() -> None:
             await mount_await
             self.call_after_refresh(self._update_overflow_classes)
@@ -549,9 +558,11 @@ class Tabs(Widget, can_focus=True):
         underline.highlight_end = 0
         self.post_message(self.Cleared(self))
         self.active = ""
+
         async def clear_and_check() -> None:
             await self.query("#tabs-list > Tab").remove()
             self.call_after_refresh(self._update_overflow_classes)
+
         return AwaitComplete(clear_and_check())
 
     def get_tab(self, tab_id: str) -> Tab | None:
@@ -632,9 +643,8 @@ class Tabs(Widget, can_focus=True):
                 # Tabs are empty!
                 return
             self.active = tab.id or ""
-        self.call_after_refresh(self._update_overflow_classes) 
+        self.call_after_refresh(self._update_overflow_classes)
         self.call_after_refresh(self._watch_scroll)
-        
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="tabs-wrapper"):
@@ -774,7 +784,6 @@ class Tabs(Widget, can_focus=True):
         self._highlight_active(animate=False)
         self._scroll_active_tab()
         self._update_overflow_classes()
-
 
     def action_next_tab(self) -> None:
         """Make the next tab active."""
