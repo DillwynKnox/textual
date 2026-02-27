@@ -265,7 +265,6 @@ class Tabs(Widget, can_focus=True):
         &.-overflow-right #right-indicator {
             display: block;
         }
-        
     }
     """
 
