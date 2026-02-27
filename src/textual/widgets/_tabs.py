@@ -521,7 +521,7 @@ class Tabs(Widget, can_focus=True):
                 self.active = tab_widget.id or ""
                 self._highlight_active(animate=False)
                 self.post_message(activated_message)
-                self.call_after_refresh(self._check_overflow)
+                self.call_after_refresh(self._update_overflow_classes)
 
             return AwaitComplete(refresh_active())
         elif before or after:
@@ -529,12 +529,12 @@ class Tabs(Widget, can_focus=True):
             async def refresh_active() -> None:
                 await mount_await
                 self._highlight_active(animate=False)
-                self.call_after_refresh(self._check_overflow)
+                self.call_after_refresh(self._update_overflow_classes)
 
             return AwaitComplete(refresh_active())
         async def append_and_check() -> None:
             await mount_await
-            self.call_after_refresh(self._check_overflow)
+            self.call_after_refresh(self._update_overflow_classes)
 
         return AwaitComplete(append_and_check())
 
@@ -551,7 +551,7 @@ class Tabs(Widget, can_focus=True):
         self.active = ""
         async def clear_and_check() -> None:
             await self.query("#tabs-list > Tab").remove()
-            self.call_after_refresh(self._check_overflow)
+            self.call_after_refresh(self._update_overflow_classes)
         return AwaitComplete(clear_and_check())
 
     def get_tab(self, tab_id: str) -> Tab | None:
@@ -603,7 +603,7 @@ class Tabs(Widget, can_focus=True):
                 self.active = next_tab.id or ""
             else:
                 self._highlight_active(animate=False)
-            self.call_after_refresh(self._check_overflow)
+            self.call_after_refresh(self._update_overflow_classes)
 
         return AwaitComplete(do_remove())
 
@@ -632,7 +632,8 @@ class Tabs(Widget, can_focus=True):
                 # Tabs are empty!
                 return
             self.active = tab.id or ""
-        self.call_after_refresh(self._check_overflow) 
+        self.call_after_refresh(self._update_overflow_classes) 
+        self.call_after_refresh(self._watch_scroll)
         
 
     def compose(self) -> ComposeResult:
@@ -664,7 +665,7 @@ class Tabs(Widget, can_focus=True):
             underline.highlight_start = 0
             underline.highlight_end = 0
             self.post_message(self.Cleared(self))
-        self.call_after_refresh(self._check_overflow)
+        self.call_after_refresh(self._update_overflow_classes)
 
     def _highlight_active(
         self,
@@ -730,6 +731,7 @@ class Tabs(Widget, can_focus=True):
         self.focus()
         event.stop()
         self._activate_tab(event.tab)
+        self.call_after_refresh(self._update_overflow_classes)
 
     def _activate_tab(self, tab: Tab) -> None:
         """Activate a tab.
@@ -771,7 +773,7 @@ class Tabs(Widget, can_focus=True):
         """Make the active tab visible on resize."""
         self._highlight_active(animate=False)
         self._scroll_active_tab()
-        self._check_overflow()
+        self._update_overflow_classes()
 
 
     def action_next_tab(self) -> None:
@@ -801,6 +803,7 @@ class Tabs(Widget, can_focus=True):
         tab_count = len(tabs)
         new_tab_index = (tabs.index(active_tab) + direction) % tab_count
         self.active = tabs[new_tab_index].id or ""
+        self.call_after_refresh(self._update_overflow_classes)
 
     def _on_tab_disabled(self, event: Tab.Disabled) -> None:
         """Re-post the disabled message."""
@@ -816,6 +819,7 @@ class Tabs(Widget, can_focus=True):
         """Redraw the highlight when tab is relabelled."""
         event.stop()
         self._highlight_active()
+        self.call_after_refresh(self._update_overflow_classes)
 
     def _update_ovqerflow_classes(self) -> None:
         """Add/remove overflow classes based on scroll position."""
@@ -861,7 +865,7 @@ class Tabs(Widget, can_focus=True):
             ) from None
 
         tab_to_disable.disabled = True
-        self.call_after_refresh(self._check_overflow)
+        self.call_after_refresh(self._update_overflow_classes)
         return tab_to_disable
 
     def enable(self, tab_id: str) -> Tab:
@@ -885,7 +889,7 @@ class Tabs(Widget, can_focus=True):
             ) from None
 
         tab_to_enable.disabled = False
-        self.call_after_refresh(self._check_overflow)
+        self.call_after_refresh(self._update_overflow_classes)
         return tab_to_enable
 
     def hide(self, tab_id: str) -> Tab:
@@ -912,7 +916,7 @@ class Tabs(Widget, can_focus=True):
         tab_to_hide.add_class("-hidden")
         self.post_message(self.TabHidden(self, tab_to_hide).set_sender(self))
         self.call_after_refresh(self._highlight_active)
-        self.call_after_refresh(self._check_overflow)
+        self.call_after_refresh(self._update_overflow_classes)
         return tab_to_hide
 
     def show(self, tab_id: str) -> Tab:
@@ -938,5 +942,5 @@ class Tabs(Widget, can_focus=True):
         if not self.active:
             self._activate_tab(tab_to_show)
         self.call_after_refresh(self._highlight_active)
-        self.call_after_refresh(self._check_overflow)
+        self.call_after_refresh(self._update_overflow_classes)
         return tab_to_show
