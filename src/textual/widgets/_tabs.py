@@ -944,3 +944,32 @@ class Tabs(Widget, can_focus=True):
         self.call_after_refresh(self._highlight_active)
         self.call_after_refresh(self._update_overflow_classes)
         return tab_to_show
+    
+    SCROLL_STEP = 5  
+
+    async def _on_click(self, event: events.Click) -> None:
+        """Handle click on the indicator arrows."""
+        
+        clicked = event.control
+        if not isinstance(clicked, Widget):
+            return
+
+        if clicked.id == "left-indicator":
+            event.stop()
+            self._scroll_tabs_by(-self.SCROLL_STEP)
+        elif clicked.id == "right-indicator":
+            event.stop()
+            self._scroll_tabs_by(+self.SCROLL_STEP)
+
+
+    def _scroll_tabs_by(self, delta: int) -> None:
+        """Scroll tabs left/right by delta cells."""
+        try:
+            scroll = self.query_one("#tabs-scroll")
+        except NoMatches:
+            return
+
+        new_x = max(0, min(scroll.max_scroll_x, scroll.scroll_x + delta))
+        scroll.scroll_x = new_x
+        
+        self.call_after_refresh(self._update_overflow_classes)
