@@ -21,8 +21,8 @@ async def test_issue_4270_indicator_widgets_are_composed() -> None:
     async with TabsApp().run_test() as pilot:
         tabs = pilot.app.query_one(Tabs)
 
-        left = tabs.query_one("#tabs-left-indicator", Static)
-        right = tabs.query_one("#tabs-right-indicator", Static)
+        left = tabs.query_one("#left-indicator", Static)
+        right = tabs.query_one("#right-indicator", Static)
         scroll = tabs.query_one("#tabs-scroll")
 
         
