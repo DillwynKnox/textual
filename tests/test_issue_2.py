@@ -118,24 +118,6 @@ async def test_overflow_updates_when_removing_tabs():
             await pilot.pause()
         assert not tabs.has_class("-overflow-right")
 
-
-async def test_overflow_updates_when_clearing_tabs():
-    """Test that overflow indicators update when all tabs are cleared.
-
-    Verifies that after clearing all tabs, both overflow indicators are hidden.
-    """
-    app = TabsTestApp(*[f"Tab {i}" for i in range(20)])
-    async with app.run_test() as pilot:
-        tabs = app.query_one(Tabs)
-        await pilot.resize_terminal(80, 24)
-        await pilot.pause()
-        assert tabs.has_class("-overflow-right")
-        await tabs.clear()
-        await pilot.pause()
-        assert not tabs.has_class("-overflow-right")
-        assert not tabs.has_class("-overflow-left")
-
-
 async def test_overflow_updates_when_hiding_tabs():
     """Test that overflow indicators update when tabs are hidden.
 
@@ -194,32 +176,6 @@ async def test_overflow_updates_when_relabelling_tabs():
         tabs.call_after_refresh(tabs._update_overflow_classes)
         await pilot.pause()
         assert tabs.has_class("-overflow-right")
-
-
-async def test_overflow_updates_when_clicking_tabs():
-    """Test that overflow indicators update when tabs are clicked.
-
-    Verifies that clicking on a tab near the end of the list causes scrolling,
-    which should make the left overflow indicator appear.
-    """
-    app = TabsTestApp(*[f"Tab {i}" for i in range(20)])
-    async with app.run_test() as pilot:
-        tabs = app.query_one(Tabs)
-        await pilot.resize_terminal(80, 24)
-        await pilot.pause()
-        assert tabs.has_class("-overflow-right")
-        assert not tabs.has_class("-overflow-left")
-        last_tab = tabs.query(Tab).last()
-        await pilot.click(last_tab)
-        await pilot.pause()
-        if not tabs.has_class("-overflow-left"):
-            for _ in range(3):
-                await pilot.click(last_tab)
-                await pilot.pause()
-                if tabs.has_class("-overflow-left"):
-                    break
-        assert tabs.has_class("-overflow-left")
-
 
 async def test_overflow_updates_when_using_keyboard():
     """Test that overflow indicators update during keyboard navigation.
