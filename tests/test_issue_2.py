@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from textual.app import App, ComposeResult
-from textual.widgets import Static, Tabs, Tab
+from textual.widgets import Static, Tabs
+from textual.containers import Horizontal
 
 
 async def test_issue_4270_indicator_widgets_are_composed() -> None:
@@ -21,17 +22,17 @@ async def test_issue_4270_indicator_widgets_are_composed() -> None:
     async with TabsApp().run_test() as pilot:
         tabs = pilot.app.query_one(Tabs)
 
-        left = tabs.query_one("#left-indicator", Static)
-        right = tabs.query_one("#right-indicator", Static)
-        scroll = tabs.query_one("#tabs-scroll")
-
+        wrapper = tabs.query_one("#tabs-wrapper", Horizontal)
         
-        assert left.parent is tabs
-        assert right.parent is tabs
-        assert scroll.parent is tabs
-
-       
-        children = list(tabs.children)
+        left = wrapper.query_one("#left-indicator", Static)
+        right = wrapper.query_one("#right-indicator", Static)
+        scroll = wrapper.query_one("#tabs-scroll")
+        
+        assert left.parent is wrapper
+        assert right.parent is wrapper
+        assert scroll.parent is wrapper
+        
+        children = list(wrapper.children)
         assert children.index(left) < children.index(scroll) < children.index(right)
 class TabsTestApp(App[None]):
     """Test application for Tabs widget testing."""
