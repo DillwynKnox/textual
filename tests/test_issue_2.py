@@ -60,7 +60,7 @@ async def test_overflow_updates_on_mount():
     async with app.run_test() as pilot:
         tabs = app.query_one(Tabs)
         await pilot.pause()
-        await pilot.app.set_terminal_size(80, 24)
+        await pilot.resize_terminal(80, 24)
         await pilot.pause()
         assert tabs.has_class("-overflow-right")
         assert not tabs.has_class("-overflow-left")
@@ -75,10 +75,10 @@ async def test_overflow_updates_on_resize():
     app = TabsTestApp("Tab 1", "Tab 2", "Tab 3")
     async with app.run_test() as pilot:
         tabs = app.query_one(Tabs)
-        await pilot.app.set_terminal_size(120, 24)
+        await pilot.resize_terminal(120, 24)
         await pilot.pause()
         assert not tabs.has_class("-overflow-right")
-        await pilot.app.set_terminal_size(20, 24)
+        await pilot.resize_terminal(20, 24)
         await pilot.pause()
         assert tabs.has_class("-overflow-right")
 
@@ -92,7 +92,7 @@ async def test_overflow_updates_when_adding_tabs():
     app = TabsTestApp("Tab 1", "Tab 2", "Tab 3")
     async with app.run_test() as pilot:
         tabs = app.query_one(Tabs)
-        await pilot.app.set_terminal_size(80, 24)
+        await pilot.resize_terminal(80, 24)
         await pilot.pause()
         assert not tabs.has_class("-overflow-right")
         for i in range(4, 20):
@@ -110,7 +110,7 @@ async def test_overflow_updates_when_removing_tabs():
     app = TabsTestApp(*[f"Tab {i}" for i in range(20)])
     async with app.run_test() as pilot:
         tabs = app.query_one(Tabs)
-        await pilot.app.set_terminal_size(80, 24)
+        await pilot.resize_terminal(80, 24)
         await pilot.pause()
         assert tabs.has_class("-overflow-right")
         for i in range(15):
@@ -127,7 +127,7 @@ async def test_overflow_updates_when_clearing_tabs():
     app = TabsTestApp(*[f"Tab {i}" for i in range(20)])
     async with app.run_test() as pilot:
         tabs = app.query_one(Tabs)
-        await pilot.app.set_terminal_size(80, 24)
+        await pilot.resize_terminal(80, 24)
         await pilot.pause()
         assert tabs.has_class("-overflow-right")
         await tabs.clear()
@@ -145,7 +145,7 @@ async def test_overflow_updates_when_hiding_tabs():
     app = TabsTestApp(*[f"Tab {i}" for i in range(20)])
     async with app.run_test() as pilot:
         tabs = app.query_one(Tabs)
-        await pilot.app.set_terminal_size(80, 24)
+        await pilot.resize_terminal(80, 24)
         await pilot.pause()
         assert tabs.has_class("-overflow-right")
         for i in range(15):
@@ -163,7 +163,7 @@ async def test_overflow_updates_when_showing_tabs():
     app = TabsTestApp(*[f"Tab {i}" for i in range(20)])
     async with app.run_test() as pilot:
         tabs = app.query_one(Tabs)
-        await pilot.app.set_terminal_size(80, 24)
+        await pilot.resize_terminal(80, 24)
         await pilot.pause()
         for i in range(15):
             tabs.hide(f"tab-{i+1}")
@@ -184,7 +184,7 @@ async def test_overflow_updates_when_relabelling_tabs():
     app = TabsTestApp("Short")
     async with app.run_test() as pilot:
         tabs = app.query_one(Tabs)
-        await pilot.app.set_terminal_size(30, 24)
+        await pilot.resize_terminal(30, 24)
         await pilot.pause()
         assert not tabs.has_class("-overflow-right")
         tab = tabs.get_tab("tab-1")
@@ -205,7 +205,7 @@ async def test_overflow_updates_when_clicking_tabs():
     app = TabsTestApp(*[f"Tab {i}" for i in range(20)])
     async with app.run_test() as pilot:
         tabs = app.query_one(Tabs)
-        await pilot.app.set_terminal_size(80, 24)
+        await pilot.resize_terminal(80, 24)
         await pilot.pause()
         assert tabs.has_class("-overflow-right")
         assert not tabs.has_class("-overflow-left")
@@ -230,7 +230,7 @@ async def test_overflow_updates_when_using_keyboard():
     app = TabsTestApp(*[f"Tab {i}" for i in range(20)])
     async with app.run_test() as pilot:
         tabs = app.query_one(Tabs)
-        await pilot.app.set_terminal_size(80, 24)
+        await pilot.resize_terminal(80, 24)
         await pilot.pause()
         assert not tabs.has_class("-overflow-left")
         assert tabs.has_class("-overflow-right")
@@ -250,7 +250,7 @@ async def test_overflow_updates_when_active_tab_changes():
     app = TabsTestApp(*[f"Tab {i}" for i in range(20)])
     async with app.run_test() as pilot:
         tabs = app.query_one(Tabs)
-        await pilot.app.set_terminal_size(80, 24)
+        await pilot.resize_terminal(80, 24)
         await pilot.pause()
         assert not tabs.has_class("-overflow-left")
         assert tabs.has_class("-overflow-right")
