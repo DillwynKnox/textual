@@ -3,6 +3,7 @@ from __future__ import annotations
 from textual.app import App, ComposeResult
 from textual.widgets import Static, Tabs
 from textual.containers import Horizontal
+from textual.containers import Horizontal
 
 
 async def test_issue_4270_indicator_widgets_are_composed() -> None:
@@ -27,7 +28,17 @@ async def test_issue_4270_indicator_widgets_are_composed() -> None:
         left = wrapper.query_one("#left-indicator", Static)
         right = wrapper.query_one("#right-indicator", Static)
         scroll = wrapper.query_one("#tabs-scroll")
+        wrapper = tabs.query_one("#tabs-wrapper", Horizontal)
         
+        left = wrapper.query_one("#left-indicator", Static)
+        right = wrapper.query_one("#right-indicator", Static)
+        scroll = wrapper.query_one("#tabs-scroll")
+        
+        assert left.parent is wrapper
+        assert right.parent is wrapper
+        assert scroll.parent is wrapper
+        
+        children = list(wrapper.children)
         assert left.parent is wrapper
         assert right.parent is wrapper
         assert scroll.parent is wrapper
